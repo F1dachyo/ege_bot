@@ -1,5 +1,6 @@
 import os
 import random
+from datetime import datetime, timedelta
 
 import uvicorn
 from uuid import UUID
@@ -10,7 +11,7 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
-from init_db import Ex4, Ex9, Ex10, Ex11, Ex12, User
+from init_db import Ex4, Ex9, Ex10, Ex11, Ex12, UsersMistakes, User
 
 app = FastAPI()
 
@@ -131,7 +132,7 @@ async def get_task(ex_id: int):
         raise HTTPException(status_code=404, detail="Ахуел?")
 
 @app.post("/v1/task/mistake/{tg_id}/{task_id}/{task_type}", status_code=204,
-             summary="Добавление задания для пользователя",
+             summary="Добавление задания для исправления",
              description="Добавление задания для исправления пользователем, в котором он совершил ошибку",
              responses={
                  204: {
@@ -141,7 +142,7 @@ async def get_task(ex_id: int):
                  }
              })
 async def post_mistake(tg_id: int, task_id: int, task_type: int):
-    session.add(User(tg_id=tg_id, task_id=task_id, task_type=task_type))
+    session.add(UsersMistakes(tg_id=tg_id, task_id=task_id, task_type=task_type))
     session.commit()
     return
 
@@ -232,7 +233,7 @@ async def post_mistake(tg_id: int, task_id: int, task_type: int):
                  }
              })
 async def get_mistake(tg_id: int):
-    mistakes = session.query(User).filter(User.tg_id == tg_id).all()
+    mistakes = session.query(UsersMistakes).filter(UsersMistakes.tg_id == tg_id).all()
     if not mistakes:
         raise HTTPException(status_code=404, detail='Not Found Mistakes')
     mistake = random.choice(mistakes)
@@ -248,6 +249,68 @@ async def get_mistake(tg_id: int):
         return session.query(Ex11).filter(Ex11.id == mistakes.task_id).all()
     elif mistakes.task_type == 12:
         return session.query(Ex12).filter(Ex12.id == mistakes.task_id).all()
+
+@app.post('v1/user/update.statistic/{tg_id}/{status_answer}', status_code=204,
+             summary="Обновления статистики пользователя",
+             description="Обновления статистики пользователя по tg_id",
+             responses={
+                 204: {
+                     "description": "Successful Response",
+                     "content": {
+                     }
+                 }
+             })
+async def update_statistic(tg_id: int, status_answer: bool):
+    user = session.query(User).filter(User.tg_id == tg_id).first()
+    user.all_answers += 1
+    if status_answer:
+        user.right_answers += 1
+    today = datetime.today().date()
+    if user.date_last_update_streak + timedelta(days=1) == today:
+        user.date_last_update_streak = today
+        user.streak += 1
+    else:
+        user.date_last_update_streak = today
+        user.streak = 1
+
+@app.get('v1/user/statistic/{tg_id}',
+         summary="Получения статистики пользователя",
+         description="Получения статистики пользователя по tg_id",
+         responses={
+             200: {
+                 "description": "Successful Response",
+                 "content": {
+                     "application/json": {
+                         "example": {
+                             "streak": 1,
+                             "all_answers": 1,
+                             "right_answers": 1
+                         }
+                     }
+                 }
+             }
+         })
+async def get_statistic(tg_id: int):
+    user = session.query(User).filter(User.tg_id == tg_id).first()
+    del user.date_last_update_streak
+    del user.tg_id
+    return user
+
+@app.post("/v1/user/init/{tg_id}", status_code=204,
+          summary="Инициализация пользователя",
+          description="Инициализация пользователя по tg_id",
+          responses={
+              204: {
+                  "description": "Successful Response",
+                  "content": {
+
+                  }
+              }
+          })
+async def init_user(tg_id: int):
+    session.add(User(tg_id=tg_id, streak=0, all_answers=0, right_answers=0, date_last_update_streak=datetime.now() - timedelta(days=1)))
+    session.commit()
+    return
 
 if __name__ == "__main__":
     server_address = os.getenv("SERVER_ADDRESS", "0.0.0.0:8080")

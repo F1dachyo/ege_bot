@@ -8,6 +8,15 @@ session = Session(engine)
 class User(Base):
     __tablename__ = 'users'
 
+    tg_id = Column(Integer, primary_key=True)
+    streak = Column(Integer, nullable=False)
+    all_answers = Column(Integer, nullable=False)
+    right_answers = Column(Integer, nullable=False)
+    date_last_update_streak = Column(Date, nullable=False)
+
+class UsersMistakes(Base):
+    __tablename__ = 'users_mistakes'
+
     id = Column(Integer, primary_key=True, autoincrement=True)
     tg_id = Column(Integer, nullable=False)
     task_id = Column(Integer, nullable=False)
@@ -68,4 +77,4 @@ class Ex12(Base):
     is_hard = Column(Boolean, nullable=False)
     comment = Column(String, nullable=False)
 
-Base.metadata.create_all(engine, tables=[User.__table__, Ex4.__table__, Ex9.__table__, Ex10.__table__, Ex11.__table__, Ex12.__table__])
+Base.metadata.create_all(engine, tables=[User.__table__, UsersMistakes.__table__, Ex4.__table__, Ex9.__table__, Ex10.__table__, Ex11.__table__, Ex12.__table__])
