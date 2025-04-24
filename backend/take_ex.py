@@ -2,7 +2,7 @@ import requests
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
-from init_db import Ex4, Ex9
+from init_db import *
 
 engine = create_engine('postgresql+psycopg://admin:7465@localhost:5432/uchi_bot')
 session = Session(engine)
@@ -18,7 +18,7 @@ def take_some_ex():
         "isHard": False,
         "isWorkOnMistakes": False,
         "is_onboarding": False,
-        "topic_id": 2,
+        "topic_id": 5,
         "amount": 10000
     }
 
@@ -30,7 +30,7 @@ def take_some_ex():
     for i in data:
         if i['id'] in id_is_db:
             continue
-        ex4 = Ex4()
+        ex4 = Ex12()
         ex4.id = i['id']
         ex4.type = i['type']
         ex4.prompt = i['prompt']
