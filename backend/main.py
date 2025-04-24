@@ -222,7 +222,10 @@ async def post_mistake(tg_id: int, task_id: int, task_type: int):
                  }
              })
 async def get_mistake(tg_id: int):
-    mistakes = random.choice(session.query(User).filter(User.tg_id == tg_id).all())
+    mistakes = session.query(User).filter(User.tg_id == tg_id).all()
+    if not mistakes:
+        raise HTTPException(status_code=404, detail='Not Found Mistakes')
+    mistake = random.choice(mistakes)
     session.delete(mistakes)
     session.commit()
     if mistakes.task_type == 4:
