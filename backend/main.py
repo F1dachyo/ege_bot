@@ -219,6 +219,16 @@ async def post_mistake(tg_id: int, task_id: int, task_type: int):
                             }
                          }
                      },
+                 },
+                 404: {
+                     "description": "Not Found Mistakes",
+                     "content": {
+                         "application/json": {
+                             "example": {
+                                 "detail": "Not Found Mistakes"
+                             }
+                         }
+                     },
                  }
              })
 async def get_mistake(tg_id: int):
