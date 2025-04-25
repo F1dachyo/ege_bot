@@ -294,8 +294,6 @@ async def update_statistic(tg_id: int, status_answer: bool):
          })
 async def get_statistic(tg_id: int):
     user = session.query(User).filter(User.tg_id == tg_id).first()
-    del user.date_last_update_streak
-    del user.tg_id
     return user
 
 @app.post("/v1/user/init/{tg_id}", status_code=204,
@@ -310,6 +308,7 @@ async def get_statistic(tg_id: int):
               }
           })
 async def init_user(tg_id: int):
+    session.rollback()
     user = session.query(User).filter(User.tg_id == tg_id).first()
     if not user:
         session.add(User(tg_id=tg_id, streak=0, all_answers=0, right_answers=0, date_last_update_streak=datetime.now() - timedelta(days=1)))
