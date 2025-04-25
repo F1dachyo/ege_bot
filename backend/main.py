@@ -308,8 +308,10 @@ async def get_statistic(tg_id: int):
               }
           })
 async def init_user(tg_id: int):
-    session.add(User(tg_id=tg_id, streak=0, all_answers=0, right_answers=0, date_last_update_streak=datetime.now() - timedelta(days=1)))
-    session.commit()
+    user = session.query(User).filter(User.tg_id == tg_id).first()
+    if not user:
+        session.add(User(tg_id=tg_id, streak=0, all_answers=0, right_answers=0, date_last_update_streak=datetime.now() - timedelta(days=1)))
+        session.commit()
     return
 
 if __name__ == "__main__":
