@@ -9,8 +9,8 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 logging.basicConfig(level=logging.INFO)
 
-BOT_TOKEN = ""
-API_TASK_URL = "http://192.168.43.200:8080/v1/ex/9"
+BOT_TOKEN = "8195396386:AAEJzOefLrJU5KVWBDlPMuB3ZHC3D89LkCQ"
+API_TASK_URL = "http://localhost:8080/v1/task/10"
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
 
