@@ -11,12 +11,17 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
-from init_db import Ex4, Ex9, Ex10, Ex11, Ex12, UsersMistakes, User
+from save_and_load_db import import_csv_to_database
+from init_db import Ex4, Ex9, Ex10, Ex11, Ex12, UsersMistakes, User, init_db
+
 
 app = FastAPI()
 
-engine = create_engine('postgresql+psycopg://admin:7465@localhost:5432/uchi_bot')
+engine = create_engine(os.getenv("DATABASE_URL"))
 session = Session(engine)
+
+init_db()
+import_csv_to_database()
 
 @app.get("/v1/ping",
              responses={

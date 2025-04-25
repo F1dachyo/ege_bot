@@ -1,8 +1,10 @@
 from sqlalchemy import create_engine, Column, Integer, String, UUID, Date, DateTime, Boolean, ARRAY, JSON
 from sqlalchemy.orm import declarative_base, Session
 
+import os
+
 Base = declarative_base()
-engine = create_engine('postgresql+psycopg://admin:7465@localhost:5432/uchi_bot')
+engine = create_engine(os.getenv("DATABASE_URL"))
 session = Session(engine)
 
 class User(Base):
@@ -77,4 +79,5 @@ class Ex12(Base):
     is_hard = Column(Boolean, nullable=False)
     comment = Column(String, nullable=False)
 
-Base.metadata.create_all(engine, tables=[User.__table__, UsersMistakes.__table__, Ex4.__table__, Ex9.__table__, Ex10.__table__, Ex11.__table__, Ex12.__table__])
+def init_db():
+    Base.metadata.create_all(engine, tables=[User.__table__, UsersMistakes.__table__, Ex4.__table__, Ex9.__table__, Ex10.__table__, Ex11.__table__, Ex12.__table__])

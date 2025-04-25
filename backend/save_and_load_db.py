@@ -3,9 +3,11 @@ import json
 from sqlalchemy import create_engine, MetaData, text
 from sqlalchemy.dialects.postgresql import JSON, JSONB, ARRAY
 import pandas as pd
+#from dotenv import load_dotenv
 
+#load_dotenv()
 # Настройки подключения и папки для CSV
-DATABASE_URL = "postgresql+psycopg://admin:7465@localhost:5432/uchi_bot"  # Замените на ваши параметры
+DATABASE_URL = os.getenv("DATABASE_URL")  # Замените на ваши параметры
 CSV_FOLDER = "csv_exports"
 
 # Создаём движок и метаданные

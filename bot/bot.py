@@ -1,5 +1,6 @@
 import logging
 import asyncio
+import os
 import random
 
 import aiohttp
@@ -12,8 +13,8 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 logging.basicConfig(level=logging.INFO)
 
 # Конфигурационные переменные (замените на свои)
-BOT_TOKEN = "7523350300:AAEq1ZdB_heLDsBHkggLWlGKezJZP6esL6Q"
-BASE_API_URL = "http://localhost:8080"  # Базовый URL вашего API
+BOT_TOKEN = os.getenv("BOT_TOKEN")
+BASE_API_URL = "http://api:8080"  # Базовый URL вашего API
 
 # Инициализация бота и диспетчера
 bot = Bot(token=BOT_TOKEN)

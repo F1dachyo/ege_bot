@@ -3,7 +3,7 @@
 services:
   postgres:
     image: postgres:16.6
-    container_name: postgres_ege
+    container_name: postgres
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: 7465
@@ -12,6 +12,30 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  api:
+    build:
+      dockerfile: Dockerfile
+      context: ./backend
+    container_name: api
+    ports:
+      - "8080:8080"
+    environment:
+      DATABASE_URL: postgresql+psycopg://admin:7465@postgres:5432/uchi_bot
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
+  bot:
+    build:
+      dockerfile: Dockerfile
+      context: ./bot
+    container_name: bot
+    environment:
+      BOT_TOKEN: 7523350300:AAEq1ZdB_heLDsBHkggLWlGKezJZP6esL6Q
+    depends_on:
+      - api
     restart: unless-stopped
 
 volumes:

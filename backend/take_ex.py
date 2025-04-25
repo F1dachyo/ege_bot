@@ -1,10 +1,11 @@
 import requests
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
 from init_db import *
 
-engine = create_engine('postgresql+psycopg://admin:7465@localhost:5432/uchi_bot')
+engine = create_engine(os.getenv("DATABASE_URL"))
 session = Session(engine)
 
 
