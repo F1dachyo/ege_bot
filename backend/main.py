@@ -272,6 +272,8 @@ async def update_statistic(tg_id: int, status_answer: bool):
     else:
         user.date_last_update_streak = today
         user.streak = 1
+    session.commit()
+    return
 
 @app.get('/v1/user/statistic/{tg_id}',
          summary="Получения статистики пользователя",
