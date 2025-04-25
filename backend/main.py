@@ -250,7 +250,7 @@ async def get_mistake(tg_id: int):
     elif mistakes.task_type == 12:
         return session.query(Ex12).filter(Ex12.id == mistakes.task_id).all()
 
-@app.post('v1/user/update.statistic/{tg_id}/{status_answer}', status_code=204,
+@app.post('/v1/user/update.statistic/{tg_id}/{status_answer}', status_code=204,
              summary="Обновления статистики пользователя",
              description="Обновления статистики пользователя по tg_id",
              responses={
@@ -273,7 +273,7 @@ async def update_statistic(tg_id: int, status_answer: bool):
         user.date_last_update_streak = today
         user.streak = 1
 
-@app.get('v1/user/statistic/{tg_id}',
+@app.get('/v1/user/statistic/{tg_id}',
          summary="Получения статистики пользователя",
          description="Получения статистики пользователя по tg_id",
          responses={
