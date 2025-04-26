@@ -142,10 +142,15 @@ async def send_task_by_ex(chat_id: int, ex_id: int, tg_id:int):
     # Формирование текста задания:
     # Если задание содержит список токенов, выводим "____" вместо пропусков.
     tokens = task.get("tokens", [])
-    task_text = "".join("____" if token.get("isBlank") else token.get("text", "") for token in tokens)
+    if task.get("type", "") == "accents":
+        task_text = "".join(token.get("text", "") for token in tokens)
+    else:
+        task_text = "".join("__" if token.get("isBlank") else token.get("text", "") for token in tokens)
     prompt = task.get("prompt") or ""
+    if prompt:
+        task_text = prompt.replace("{task_text}", task_text)
     message_text = (
-        f"Задание #{task.get('id')}\n\n{prompt}{task_text}\n\n"
+        f"Задание #{task.get('id')}\n\n{task_text}\n\n"
         "Выбери правильный вариант ответа:"
     )
     global message_count, ad_target
