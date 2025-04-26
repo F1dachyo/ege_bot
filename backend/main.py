@@ -274,7 +274,7 @@ async def update_statistic(tg_id: int, status_answer: bool):
     if user.date_last_update_streak + timedelta(days=1) == today:
         user.date_last_update_streak = today
         user.streak += 1
-    else:
+    elif user.date_last_update_streak != today:
         user.date_last_update_streak = today
         user.streak = 1
     session.commit()
