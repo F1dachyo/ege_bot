@@ -153,7 +153,9 @@ async def send_task_by_ex(chat_id: int, ex_id: int, tg_id:int):
         f"Задание #{task.get('id')}\n\n{task_text}\n\n"
         "Выбери правильный вариант ответа:"
     )
-    global message_count, ad_target
+
+    global message_count, ad_target, comm
+    comm = task.get("comment", "Пояснения для этого задания нет")
     message_count += 1  # Увеличиваем счётчик при каждом полученном сообщении
     print("MESSAGES", message_count, ad_target)
     # Если достигли порога, отправляем рекламное сообщение
@@ -262,10 +264,10 @@ async def process_answer(callback: types.CallbackQuery):
 
 
     if is_correct:
-        result_text = "Правильно! 🎉"
+        result_text = f"Правильно! 🎉 \nОбъяснение: {comm}"
         await update_statistic(callback.from_user.id, True)
     else:
-        result_text = "Неправильно! 😕"
+        result_text = f"Неправильно! 😕 \nОбъяснение: {comm}"
         await update_statistic(callback.from_user.id, False)
         # Сохраняем ошибку: POST /v1/task/mistake/{tg_id}/{task_id}/{task_type}
         await report_mistake(callback.from_user.id, task_id, ex_id)
